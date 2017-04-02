@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9117cac4-d3ad-47e5-aee0-fac1459ec9b8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.txt" afterPath="$PROJECT_DIR$/README.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bot/bot.py" afterPath="$PROJECT_DIR$/bot/bot.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -357,7 +355,14 @@
       <option name="project" value="LOCAL" />
       <updated>1491095475336</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Сделал заготовку для работы - описал команды">
+      <created>1491155630647</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1491155630647</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -390,7 +395,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="test_commit" />
     <MESSAGE value="Восстановил пятничное рабочее почти в полном размере" />
-    <option name="LAST_COMMIT_MESSAGE" value="Восстановил пятничное рабочее почти в полном размере" />
+    <MESSAGE value="Сделал заготовку для работы - описал команды" />
+    <option name="LAST_COMMIT_MESSAGE" value="Сделал заготовку для работы - описал команды" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -525,6 +531,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="8" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
