@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import telebot
 import config
-from pars import get_html, pars
+import re
+from pars import get_html_by_requests, pars
+from pars import config as cfg
 '''
 КОДЫ
 /ks - оставшиеся коды в секторах
@@ -32,8 +34,6 @@ from pars import get_html, pars
 синий, на подоконнике"'''
 
 bot = telebot.TeleBot(config.token)
-driver = get_html.init_driver()
-
 
 '''Логи бота'''
 print bot.get_me()
@@ -47,21 +47,27 @@ def log(message):
                                                                    str(message.from_user.id),
                                                                    message.text)
 
+'''Реакция бота на команду /login 123456: логинится в двигло и заходит в игру, отправляет пользователю сообщение'''
+
+
+@bot.message_handler(regexp=r'login \d')
+def handle_login(message):
+    game_num = message.text.split()[1]
+    print game_num
+    global s
+    s = get_html_by_requests.login()
+    if cfg.username in pars.parse_team_datafile_bs(get_html_by_requests.team_check(s)):
+        bot.send_message(message.from_user.id, "I'm in!")
+    else:
+        bot.send_message(message.from_user.id, "I'm not in!")
+
 '''реакция бота на команду /q: выход из игрового движка, разлогинивание'''
 
 
 @bot.message_handler(commands=['q'])
 def handle_quit(message):
-    get_html.close(driver)
+    get_html_by_requests.end_work(s)
     bot.send_message(message.from_user.id, "I'm done!")
-
-'''Реакция бота на команду /login 123456: логинится в двигло и заходит в игру, отправляет пользователю сообщение'''
-
-
-@bot.message_handler(commands=['login'])
-def handle_login(message):
-    get_html.login(driver)
-    bot.send_message(message.from_user.id, "I'm in!")
 
 '''Список оставшихся кодов в секторах'''
 
@@ -162,7 +168,8 @@ def handle_btext_all(message):
 
 @bot.message_handler(commands=['w'])
 def handle_welcome(message):
-    bot.send_message(message.from_user.id, 'Hello!') #/w - прикрепление к чату
+    bot.send_message(message.chat.id, 'Hello!') #/w - прикрепление к чату
+    return message.chat.id
 
 '''Выдаёт текст задания в виде:
 Время на выполнение

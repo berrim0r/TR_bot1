@@ -4,9 +4,15 @@ import config
 
 def login():
     values = {'Login': config.username, 'Password': config.password}
-    with requests.Session() as s:
-        r = s.post(config.login_page, data=values)
-        r = s.get(config.team_details)
-    print r.text
+    s = requests.Session()
+    s.post(config.login_page, data=values)
+    return s
 
-login()
+
+def team_check(s):
+    r = s.get(config.team_details)
+    return r.text
+
+
+def end_work(s):
+    s.close()
