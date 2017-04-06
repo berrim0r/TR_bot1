@@ -32,7 +32,8 @@ from pars import config as cfg
 Примечания к коду. Примечания пишутся с новой строки под кодом в виде
 /-123dr
 синий, на подоконнике"'''
-
+s = False
+print s
 bot = telebot.TeleBot(config.token)
 
 '''Логи бота'''
@@ -52,10 +53,11 @@ def log(message):
 
 @bot.message_handler(regexp=r'login \d')
 def handle_login(message):
+    global game_num
     game_num = message.text.split()[1]
-    print game_num
     global s
     s = get_html_by_requests.login()
+    print cfg.game_engine + game_num + '/'
     if cfg.username in pars.parse_team_datafile_bs(get_html_by_requests.team_check(s)):
         bot.send_message(message.from_user.id, "I'm in!")
     else:
@@ -97,7 +99,7 @@ def handle_vs(message):
 def handle_kb(message):
     bot.send_message(message.from_user.id, 'ostalos bonusov') #/kb - оставшиеся коды в бонусах
 
-'''Принятые бонусы, с указаниемтекста в них'''
+'''Принятые бонусы, с указанием текста в них'''
 
 
 @bot.message_handler(commands=['pb'])
@@ -133,12 +135,14 @@ def handle_bcode(message):
 
 @bot.message_handler(commands=['t'])
 def handle_time(message):
-    bot.send_message(message.from_user.id, 'vremya na urovne') #/t - тайминг
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_time(msg)
+    bot.send_message(message.from_user.id, t) #/t - тайминг
 
 '''Отправляет координаты в виде геометки'''
 
-
-@bot.message_handler(commands=['л'])
+"""
+@bot.message_handler(regexp=[r'л \d'])
 def handle_geotag(message):
     bot.send_location(message.from_user.id, latitude, longitude, ) #/л - геометка
 
@@ -152,7 +156,7 @@ def handle_bcode(message):
 '''Текст бонуса под номером *'''
 
 
-@bot.message_handler(commands=['bt'])
+@bot.message_handler(regexp=[r'bt\d'])
 def handle_btext(message):
     bot.send_message(message.from_user.id, 'text bonusa pod nomerom *') #/bt* - текст бонуса под номером *
 
@@ -169,8 +173,9 @@ def handle_btext_all(message):
 @bot.message_handler(commands=['w'])
 def handle_welcome(message):
     bot.send_message(message.chat.id, 'Hello!') #/w - прикрепление к чату
-    return message.chat.id
-
+    global chat_id
+    chat_id = message.chat.id
+"""
 '''Выдаёт текст задания в виде:
 Время на выполнение
 Текст
@@ -181,11 +186,13 @@ def handle_welcome(message):
 
 @bot.message_handler(commands=['z'])
 def handle_ztext(message):
-    bot.send_message(message.from_user.id, 'text zadaniya') #/z - задание
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    msg = pars.main_text(msg)
+    bot.send_message(message.from_user.id, msg) #/z - задание
 
 '''Выдаёт текст всех подсказок. Если подсказка недоступна, добавляет сообщение вида "До подсказки 2 осталось мм:сс"'''
 
-
+"""
 @bot.message_handler(commands=['ha'])
 def handle_hint_all(message):
     bot.send_message(message.from_user.id, 'text vseh podskazok') #/ha - подсказки
@@ -193,16 +200,21 @@ def handle_hint_all(message):
 '''Выдаёт текст конкретной подсказки'''
 
 
-@bot.message_handler(commands=['h'])
+@bot.message_handler(regexp=[r'h\d'])
 def handle_hint_num(message):
     bot.send_message(message.from_user.id, 'text podskazki pod nomerom *') #/h* - конкретная подсказка по номером *
-
+"""
 '''Выдаёт список доступных команд с описанием'''
 
 
 @bot.message_handler(commands=['help'])
 def handle_help(message):
     bot.send_message(message.from_user.id, 'spisok komand') #/help - список команд
+
+
+@bot.message_handler(content_types=['text'])
+def handle_help(message):
+    bot.send_message(message.from_user.id, 'wololo')  # /help - список команд
 
 
 if __name__ == '__main__':

@@ -16,3 +16,7 @@ def team_check(s):
 
 def end_work(s):
     s.close()
+
+def current_level(s, url):
+    r = s.get(url)
+    return r.text
