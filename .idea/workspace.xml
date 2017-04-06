@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9117cac4-d3ad-47e5-aee0-fac1459ec9b8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_html/Game_Details.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_html/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_html/zadanie 4.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_html/zadanie4 dostupna 1 podskazka.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_html/zadanie4 neverniy kod.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_html/zadanie4 verniy bonus.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test_html/zadanie4 verniy kod.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bot/bot.py" afterPath="$PROJECT_DIR$/bot/bot.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pars/config.py" afterPath="$PROJECT_DIR$/pars/config.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pars/get_html_by_requests.py" afterPath="$PROJECT_DIR$/pars/get_html_by_requests.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pars/pars.py" afterPath="$PROJECT_DIR$/pars/pars.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pars/text.html" afterPath="$PROJECT_DIR$/pars/text.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,8 +22,8 @@
       <file leaf-file-name="bot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bot/bot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="652">
-              <caret line="102" column="0" lean-forward="true" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+            <state relative-caret-position="176">
+              <caret line="58" column="36" lean-forward="false" selection-start-line="58" selection-start-column="36" selection-end-line="58" selection-end-column="36" />
               <folding>
                 <element signature="e#24#38#0" expanded="true" />
               </folding>
@@ -44,8 +34,8 @@
       <file leaf-file-name="pars.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pars/pars.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="53" lean-forward="false" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
+            <state relative-caret-position="703">
+              <caret line="104" column="21" lean-forward="false" selection-start-line="104" selection-start-column="21" selection-end-line="104" selection-end-column="33" />
               <folding>
                 <element signature="e#24#53#0" expanded="true" />
               </folding>
@@ -53,13 +43,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="get_html_by_requests.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pars/get_html_by_requests.py">
+      <file leaf-file-name="text.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pars/text.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+            <state relative-caret-position="720">
+              <caret line="217" column="13" lean-forward="true" selection-start-line="217" selection-start-column="13" selection-end-line="217" selection-end-column="13" />
               <folding>
-                <element signature="e#0#15#0" expanded="true" />
+                <element signature="e#5732#5738#0" expanded="true" />
+                <element signature="e#6239#6245#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -131,8 +122,8 @@
         <option value="$PROJECT_DIR$/pars/config.py" />
         <option value="$PROJECT_DIR$/pars/text.html" />
         <option value="$PROJECT_DIR$/pars/get_html_by_requests.py" />
-        <option value="$PROJECT_DIR$/bot/bot.py" />
         <option value="$PROJECT_DIR$/pars/pars.py" />
+        <option value="$PROJECT_DIR$/bot/bot.py" />
       </list>
     </option>
   </component>
@@ -456,7 +447,14 @@
       <option name="project" value="LOCAL" />
       <updated>1491230576586</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Добавил хтмл примеры">
+      <created>1491478615341</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1491478615341</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -491,7 +489,8 @@
     <MESSAGE value="Восстановил пятничное рабочее почти в полном размере" />
     <MESSAGE value="Сделал заготовку для работы - описал команды" />
     <MESSAGE value="Добавил привязку к чату&#10;Вывел сессию в глобальную переменную&#10;Добавил переменную с номером игры" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавил привязку к чату&#10;Вывел сессию в глобальную переменную&#10;Добавил переменную с номером игры" />
+    <MESSAGE value="Добавил хтмл примеры" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавил хтмл примеры" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -525,7 +524,7 @@
         <state relative-caret-position="204">
           <caret line="13" column="11" lean-forward="false" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -992,15 +991,15 @@
         <state relative-caret-position="323">
           <caret line="19" column="17" lean-forward="false" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pars/text.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="186" column="18" lean-forward="true" selection-start-line="186" selection-start-column="18" selection-end-line="186" selection-end-column="18" />
+        <state relative-caret-position="720">
+          <caret line="217" column="13" lean-forward="true" selection-start-line="217" selection-start-column="13" selection-end-line="217" selection-end-column="13" />
           <folding>
             <element signature="e#5732#5738#0" expanded="true" />
             <element signature="e#6239#6245#0" expanded="true" />
@@ -1010,8 +1009,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pars/pars.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="53" lean-forward="false" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
+        <state relative-caret-position="703">
+          <caret line="104" column="21" lean-forward="false" selection-start-line="104" selection-start-column="21" selection-end-line="104" selection-end-column="33" />
           <folding>
             <element signature="e#24#53#0" expanded="true" />
           </folding>
@@ -1020,8 +1019,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bot/bot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="652">
-          <caret line="102" column="0" lean-forward="true" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+        <state relative-caret-position="176">
+          <caret line="58" column="36" lean-forward="false" selection-start-line="58" selection-start-column="36" selection-end-line="58" selection-end-column="36" />
           <folding>
             <element signature="e#24#38#0" expanded="true" />
           </folding>

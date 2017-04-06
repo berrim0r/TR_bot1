@@ -2,6 +2,7 @@
 import telebot
 import config
 import re
+from  bs4 import BeautifulSoup
 from pars import get_html_by_requests, pars
 from pars import config as cfg
 '''
@@ -16,7 +17,7 @@ from pars import config as cfg
 /b - отправить бонус
 ИНФОРМАЦИЯ
 /t - тайминг
-/л - геометка
+/L - геометка
 /д - картинка дохода
 /bt* - текст бонуса под номером *
 /bta - текст всех бонусов
@@ -33,7 +34,6 @@ from pars import config as cfg
 /-123dr
 синий, на подоконнике"'''
 s = False
-print s
 bot = telebot.TeleBot(config.token)
 
 '''Логи бота'''
@@ -51,13 +51,12 @@ def log(message):
 '''Реакция бота на команду /login 123456: логинится в двигло и заходит в игру, отправляет пользователю сообщение'''
 
 
-@bot.message_handler(regexp=r'login \d')
+@bot.message_handler(regexp=r'login\d')
 def handle_login(message):
     global game_num
-    game_num = message.text.split()[1]
+    game_num = message.text[6:]
     global s
     s = get_html_by_requests.login()
-    print cfg.game_engine + game_num + '/'
     if cfg.username in pars.parse_team_datafile_bs(get_html_by_requests.team_check(s)):
         bot.send_message(message.from_user.id, "I'm in!")
     else:
@@ -76,42 +75,54 @@ def handle_quit(message):
 
 @bot.message_handler(commands=['ks'])
 def handle_ks(message):
-    bot.send_message(message.from_user.id, 'ostalos osnovnih') #/ks - оставшиеся коды в секторах
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_ks(msg)
+    bot.send_message(message.from_user.id, t) #/ks - оставшиеся коды в секторах
 
 '''Список принятых основных кодов'''
 
 
 @bot.message_handler(commands=['ps'])
 def handle_ps(message):
-    bot.send_message(message.from_user.id, 'prinyato osnovnih') #/ps - принятые коды в секторах
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_ps(msg)
+    bot.send_message(message.from_user.id, t) #/ps - принятые коды в секторах
 
 '''Полный список основных кодов с указанием принятых'''
 
 
 @bot.message_handler(commands=['vs'])
 def handle_vs(message):
-    bot.send_message(message.from_user.id, 'vsego osnovnih') #/vs - полный список основных кодов с указанием принятых
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_vs(msg)
+    bot.send_message(message.from_user.id, t) #/vs - полный список основных кодов с указанием принятых
 
 '''Оставшиеся коды в бонусах'''
 
 
 @bot.message_handler(commands=['kb'])
 def handle_kb(message):
-    bot.send_message(message.from_user.id, 'ostalos bonusov') #/kb - оставшиеся коды в бонусах
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_kb(msg)
+    bot.send_message(message.from_user.id, t) #/kb - оставшиеся коды в бонусах
 
 '''Принятые бонусы, с указанием текста в них'''
 
 
 @bot.message_handler(commands=['pb'])
 def handle_vb(message):
-    bot.send_message(message.from_user.id, 'prinyato bonusov') #/pb - принятые коды в бонусах
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_pb(msg)
+    bot.send_message(message.from_user.id, t) #/pb - принятые коды в бонусах
 
 '''Полный список бонусов, с указанием принятых (и текстом в них, если есть)'''
 
 
 @bot.message_handler(commands=['vb'])
 def handle_vb(message):
-    bot.send_message(message.from_user.id, 'vsego bonusov') #/vb - полный список бонусных кодов с указанием принятых
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_vb(msg)
+    bot.send_message(message.from_user.id, t) #/vb - полный список бонусных кодов с указанием принятых
 
 '''Отправить код в основное поле. Добавить проверку на доступность поля, если поле недоступно - написать пользователю'''
 
@@ -141,11 +152,13 @@ def handle_time(message):
 
 '''Отправляет координаты в виде геометки'''
 
-"""
-@bot.message_handler(regexp=[r'л \d'])
-def handle_geotag(message):
-    bot.send_location(message.from_user.id, latitude, longitude, ) #/л - геометка
 
+@bot.message_handler(regexp=r'L \d')
+def handle_geotag(message):
+    lat = pars.get_coords(message.text[3:])[0]
+    lon = pars.get_coords(message.text[3:])[1]
+    bot.send_location(message.from_user.id, lat, lon) #/L - геометка
+"""
 '''Присылает картинку дохода'''
 
 
@@ -156,7 +169,7 @@ def handle_bcode(message):
 '''Текст бонуса под номером *'''
 
 
-@bot.message_handler(regexp=[r'bt\d'])
+@bot.message_handler(regexp=r'bt\d')
 def handle_btext(message):
     bot.send_message(message.from_user.id, 'text bonusa pod nomerom *') #/bt* - текст бонуса под номером *
 
@@ -188,28 +201,42 @@ def handle_welcome(message):
 def handle_ztext(message):
     msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
     msg = pars.main_text(msg)
-    bot.send_message(message.from_user.id, msg) #/z - задание
+    bot.send_message(message.from_user.id, msg.text)
+    h = msg.find('a').get('href')
+    l = pars.get_coords(msg.text)
+    if h != None:
+        bot.send_photo(message.chat.id, h)
+    if l != None:
+        bot.send_message(message.chat.id, ' '.join(l))
+        bot.send_location(message.chat.id, l[0], l[1]) #/z - задание
 
 '''Выдаёт текст всех подсказок. Если подсказка недоступна, добавляет сообщение вида "До подсказки 2 осталось мм:сс"'''
 
-"""
+
 @bot.message_handler(commands=['ha'])
 def handle_hint_all(message):
-    bot.send_message(message.from_user.id, 'text vseh podskazok') #/ha - подсказки
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_ha(msg)
+    bot.send_message(message.from_user.id, t) #/ha - подсказки
 
 '''Выдаёт текст конкретной подсказки'''
 
 
-@bot.message_handler(regexp=[r'h\d'])
+@bot.message_handler(regexp=r'h\d')
 def handle_hint_num(message):
-    bot.send_message(message.from_user.id, 'text podskazki pod nomerom *') #/h* - конкретная подсказка по номером *
-"""
+    num = int(message.text[2:])
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    t = pars.get_h_num(msg, num)
+    bot.send_message(message.from_user.id, t) #/h* - конкретная подсказка по номером *
+
 '''Выдаёт список доступных команд с описанием'''
 
 
 @bot.message_handler(commands=['help'])
 def handle_help(message):
     bot.send_message(message.from_user.id, 'spisok komand') #/help - список команд
+
+'''Реакция на обычный текст, для отладки'''
 
 
 @bot.message_handler(content_types=['text'])
