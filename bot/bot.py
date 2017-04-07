@@ -35,6 +35,7 @@ from pars import config as cfg
 синий, на подоконнике"'''
 s = False
 bot = telebot.TeleBot(config.token)
+level_id = 0
 
 '''Логи бота'''
 print bot.get_me()
@@ -51,12 +52,14 @@ def log(message):
 '''Реакция бота на команду /login 123456: логинится в двигло и заходит в игру, отправляет пользователю сообщение'''
 
 
-@bot.message_handler(regexp=r'login\d')
+@bot.message_handler(regexp=r'/login\d')
 def handle_login(message):
     global game_num
     game_num = message.text[6:]
     global s
     s = get_html_by_requests.login()
+    global level_id
+    level_id = pars.level_info(get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/'))[0]
     if cfg.username in pars.parse_team_datafile_bs(get_html_by_requests.team_check(s)):
         bot.send_message(message.from_user.id, "I'm in!")
     else:
@@ -127,19 +130,28 @@ def handle_vb(message):
 '''Отправить код в основное поле. Добавить проверку на доступность поля, если поле недоступно - написать пользователю'''
 
 
-@bot.message_handler(commands=['-'])
+@bot.message_handler(regexp=r'/-\w')
 def handle_scode(message):
-    bot.send_message(message.from_user.id, 'prinyat osnovnoi')
-    bot.send_message(message.from_user.id, 'prinyat bonusnii')
-    bot.send_message(message.from_user.id, 'neverniy') #/- - отправить код
+    code = message.text[2:]
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    if pars.is_in(code, pars.get_ps(msg).split()):
+        bot.reply_to(message, u'Уже был!')
+    elif pars.code_push(s, msg, code, game_num):
+        bot.reply_to(message, u'Принят!')
+    else:
+        bot.reply_to(message, u'Не принят!') #/- - отправить код
 
 '''Отправить код в поле для ввода бонусов'''
 
 
-@bot.message_handler(commands=['b'])
+@bot.message_handler(regexp=r'/b\w')
 def handle_bcode(message):
-    bot.send_message(message.from_user.id, 'prinyat')
-    bot.send_message(message.from_user.id, 'neverniy') #/b - отправить бонус
+    bonus = message.text[2:]
+    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+    if pars.bonus_push(s, msg, bonus, game_num):
+        bot.reply_to(message, u'Принят!')
+    else:
+        bot.reply_to(message, u'Не принят!') #/b - отправить бонус
 
 '''Оставшееся время до конца уровня'''
 
@@ -153,7 +165,7 @@ def handle_time(message):
 '''Отправляет координаты в виде геометки'''
 
 
-@bot.message_handler(regexp=r'L \d')
+@bot.message_handler(regexp=r'/L \d')
 def handle_geotag(message):
     lat = pars.get_coords(message.text[3:])[0]
     lon = pars.get_coords(message.text[3:])[1]
@@ -222,7 +234,7 @@ def handle_hint_all(message):
 '''Выдаёт текст конкретной подсказки'''
 
 
-@bot.message_handler(regexp=r'h\d')
+@bot.message_handler(regexp=r'/h\d')
 def handle_hint_num(message):
     num = int(message.text[2:])
     msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
@@ -246,3 +258,4 @@ def handle_help(message):
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
+

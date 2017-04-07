@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 import re
+import config
 
 
 def parse_team_datafile_bs(text):
@@ -59,7 +60,7 @@ def get_ks(text):
 
 def get_vb(text):
     soup = BeautifulSoup(text, 'lxml')
-    bonuses = soup.find_all('h3', {'class': 'color_bonus'})
+    bonuses = soup.find_all('h3', {'class': re.compile('color_correct|color_bonus')})
     m = ''
     for item in bonuses:
         m += item.text + '\n'
@@ -101,6 +102,46 @@ def get_h_num(text, num):
     m += prompts + ' ' + prompts.find_next().text
     return m
 
+
 def get_coords(text):
     m = re.findall(r'(-?\d+\.\d+)', text)
     return m
+
+
+def code_push(s, text, code, game_num):
+    level_id = level_info(text)[0]
+    level_number = level_info(text)[1]
+    code_data = {'LevelId': level_id, 'LevelNumber': level_number,
+                 'LevelAction.Answer': code}
+    s.post(config.game_engine + game_num + '/', code_data)
+    if is_in(code, get_ps(s.get(config.game_engine + game_num + '/').text).split()):
+        return True
+    else:
+        return False
+
+
+def bonus_push(s, text, bonus, game_num):
+    soup = BeautifulSoup(text, 'lxml')
+    level_id = soup.find('input', {'name': 'LevelId'}).attrs['value']
+    level_number = soup.find('input', {'name': 'LevelNumber'}).attrs['value']
+    bonus_data = {'LevelId': level_id, 'LevelNumber': level_number,
+                 'BonusAction.Answer': bonus}
+    s.post(config.game_engine + game_num + '/', bonus_data)
+    if is_in(bonus, get_pb(s.get(config.game_engine + game_num + '/').text).split()):
+        return True
+    else:
+        return False
+
+
+def is_in(code, ls):
+    if code.encode('utf-8') in map(lambda x: x.encode('utf-8'), ls):
+        return True
+    else:
+        return False
+
+
+def level_info(text):
+    soup = BeautifulSoup(text, 'lxml')
+    level_id = soup.find('input', {'name': 'LevelId'}).attrs['value']
+    level_number = soup.find('input', {'name': 'LevelNumber'}).attrs['value']
+    return level_id, level_number
