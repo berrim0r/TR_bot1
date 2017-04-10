@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import telebot
 import config
-import re
-from  bs4 import BeautifulSoup
 from pars import get_html_by_requests, pars
 from pars import config as cfg
+from pars.pars import is_logged
 '''
 КОДЫ
 /ks - оставшиеся коды в секторах
@@ -33,7 +32,7 @@ from pars import config as cfg
 Примечания к коду. Примечания пишутся с новой строки под кодом в виде
 /-123dr
 синий, на подоконнике"'''
-s = False
+s = None
 bot = telebot.TeleBot(config.token)
 level_id = 0
 
@@ -60,10 +59,7 @@ def handle_login(message):
     s = get_html_by_requests.login()
     global level_id
     level_id = pars.level_info(get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/'))[0]
-    if cfg.username in pars.parse_team_datafile_bs(get_html_by_requests.team_check(s)):
-        bot.send_message(message.from_user.id, "I'm in!")
-    else:
-        bot.send_message(message.from_user.id, "I'm not in!")
+    bot.send_message(message.from_user.id, "I'm in!")
 
 '''реакция бота на команду /q: выход из игрового движка, разлогинивание'''
 
@@ -78,89 +74,116 @@ def handle_quit(message):
 
 @bot.message_handler(commands=['ks'])
 def handle_ks(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_ks(msg)
-    bot.send_message(message.from_user.id, t) #/ks - оставшиеся коды в секторах
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_ks(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/ks - оставшиеся коды в секторах
 
 '''Список принятых основных кодов'''
 
 
 @bot.message_handler(commands=['ps'])
 def handle_ps(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_ps(msg)
-    bot.send_message(message.from_user.id, t) #/ps - принятые коды в секторах
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_ps(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/ps - принятые коды в секторах
 
 '''Полный список основных кодов с указанием принятых'''
 
 
 @bot.message_handler(commands=['vs'])
 def handle_vs(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_vs(msg)
-    bot.send_message(message.from_user.id, t) #/vs - полный список основных кодов с указанием принятых
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_vs(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/vs - полный список основных кодов с указанием принятых
 
 '''Оставшиеся коды в бонусах'''
 
 
 @bot.message_handler(commands=['kb'])
 def handle_kb(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_kb(msg)
-    bot.send_message(message.from_user.id, t) #/kb - оставшиеся коды в бонусах
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_kb(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/kb - оставшиеся коды в бонусах
 
 '''Принятые бонусы, с указанием текста в них'''
 
 
 @bot.message_handler(commands=['pb'])
 def handle_vb(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_pb(msg)
-    bot.send_message(message.from_user.id, t) #/pb - принятые коды в бонусах
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_pb(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/pb - принятые коды в бонусах
 
 '''Полный список бонусов, с указанием принятых (и текстом в них, если есть)'''
 
 
 @bot.message_handler(commands=['vb'])
 def handle_vb(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_vb(msg)
-    bot.send_message(message.from_user.id, t) #/vb - полный список бонусных кодов с указанием принятых
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_vb(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/vb - полный список бонусных кодов с указанием принятых
 
 '''Отправить код в основное поле. Добавить проверку на доступность поля, если поле недоступно - написать пользователю'''
 
 
-@bot.message_handler(regexp=r'/-\w')
+@bot.message_handler(regexp=r'/-.')
 def handle_scode(message):
-    code = message.text[2:]
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    if pars.is_in(code, pars.get_ps(msg).split()):
-        bot.reply_to(message, u'Уже был!')
-    elif pars.code_push(s, msg, code, game_num):
-        bot.reply_to(message, u'Принят!')
+    if is_logged(s):
+        code = message.text[2:].encode('utf-8')
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        if pars.is_in(code, pars.get_ps(msg).split()):
+            bot.reply_to(message, u'Уже был!')
+        elif pars.code_push(s, msg, code, game_num):
+            bot.reply_to(message, u'Принят!')
+        else:
+            bot.reply_to(message, u'Не принят!')
     else:
-        bot.reply_to(message, u'Не принят!') #/- - отправить код
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/- - отправить код
 
 '''Отправить код в поле для ввода бонусов'''
 
 
-@bot.message_handler(regexp=r'/b\w')
+@bot.message_handler(regexp=r'/b.')
 def handle_bcode(message):
-    bonus = message.text[2:]
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    if pars.bonus_push(s, msg, bonus, game_num):
-        bot.reply_to(message, u'Принят!')
+    if is_logged(s):
+        bonus = message.text[2:].encode('utf-8')
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        if pars.bonus_push(s, msg, bonus, game_num):
+            bot.reply_to(message, u'Принят!')
+        else:
+            bot.reply_to(message, u'Не принят!')
     else:
-        bot.reply_to(message, u'Не принят!') #/b - отправить бонус
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/b - отправить бонус
 
 '''Оставшееся время до конца уровня'''
 
 
 @bot.message_handler(commands=['t'])
 def handle_time(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_time(msg)
-    bot.send_message(message.from_user.id, t) #/t - тайминг
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_time(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/t - тайминг
 
 '''Отправляет координаты в виде геометки'''
 
@@ -176,30 +199,42 @@ def handle_geotag(message):
 
 @bot.message_handler(commands=['д'])
 def handle_bcode(message):
-    bot.send_photo(message.from_user.id, photo) #/д - картинка дохода
+    if is_logged(s):
+        bot.send_photo(message.from_user.id, photo) 
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/д - картинка дохода
 
 '''Текст бонуса под номером *'''
 
 
 @bot.message_handler(regexp=r'bt\d')
 def handle_btext(message):
-    bot.send_message(message.from_user.id, 'text bonusa pod nomerom *') #/bt* - текст бонуса под номером *
+    if is_logged(s):
+        bot.send_message(message.from_user.id, 'text bonusa pod nomerom *')
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/bt* - текст бонуса под номером *
 
 '''Текст всех бонусов. Если бонус не вбит, прописывает название бонуса и его номер'''
 
 
 @bot.message_handler(commands=['bta'])
 def handle_btext_all(message):
-    bot.send_message(message.from_user.id, 'text vseh bonusov') #/bta - текст всех бонусов
+    if is_logged(s):
+        bot.send_message(message.from_user.id, 'text vseh bonusov')
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/bta - текст всех бонусов
 
 '''Постит всю информацию автоматически в чат, к которому прикреплён'''
 
 
 @bot.message_handler(commands=['w'])
 def handle_welcome(message):
-    bot.send_message(message.chat.id, 'Hello!') #/w - прикрепление к чату
-    global chat_id
-    chat_id = message.chat.id
+    if is_logged(s):
+        bot.send_message(message.chat.id, 'Hello!') #/w - прикрепление к чату
+        global chat_id
+        chat_id = message.chat.id
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!")
 """
 '''Выдаёт текст задания в виде:
 Время на выполнение
@@ -211,35 +246,45 @@ def handle_welcome(message):
 
 @bot.message_handler(commands=['z'])
 def handle_ztext(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    msg = pars.main_text(msg)
-    bot.send_message(message.from_user.id, msg.text)
-    h = msg.find('a').get('href')
-    l = pars.get_coords(msg.text)
-    if h != None:
-        bot.send_photo(message.chat.id, h)
-    if l != None:
-        bot.send_message(message.chat.id, ' '.join(l))
-        bot.send_location(message.chat.id, l[0], l[1]) #/z - задание
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        msg = pars.main_text(msg)
+        bot.send_message(message.from_user.id, msg.text)
+        h = msg.find('a').get('href')
+        l = pars.get_coords(msg.text)
+        if h != None:
+            bot.send_photo(message.chat.id, h)
+        if l != None:
+            bot.send_message(message.chat.id, ' '.join(l))
+            bot.send_location(message.chat.id, l[0], l[1])
+            handle_geotag(' '.join(l))
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/z - задание
 
 '''Выдаёт текст всех подсказок. Если подсказка недоступна, добавляет сообщение вида "До подсказки 2 осталось мм:сс"'''
 
 
 @bot.message_handler(commands=['ha'])
 def handle_hint_all(message):
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_ha(msg)
-    bot.send_message(message.from_user.id, t) #/ha - подсказки
+    if is_logged(s):
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_ha(msg)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!") #/ha - подсказки
 
 '''Выдаёт текст конкретной подсказки'''
 
 
 @bot.message_handler(regexp=r'/h\d')
 def handle_hint_num(message):
-    num = int(message.text[2:])
-    msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
-    t = pars.get_h_num(msg, num)
-    bot.send_message(message.from_user.id, t) #/h* - конкретная подсказка по номером *
+    if is_logged(s):
+        num = int(message.text[2:])
+        msg = get_html_by_requests.current_level(s, cfg.game_engine + game_num + '/')
+        t = pars.get_h_num(msg, num)
+        bot.send_message(message.from_user.id, t)
+    else:
+        bot.send_message(message.from_user.id, "Хочу залогиниться!")#/h* - конкретная подсказка по номером *
 
 '''Выдаёт список доступных команд с описанием'''
 
